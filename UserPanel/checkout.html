@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <style>
+
+        body {
+          font-family: Arial;
+          padding: 10px;
+         background-image:url(img1.avif);
+        }
+        
+        /* Header/Blog Title */
+        .header {
+          text-align: center;
+        
+        
+        }
+        
+        .header h1 {
+          font-size: 50px;
+        }
+        
+        /* Style the top navigation bar */
+        .topnav {
+          overflow: hidden;
+          background-color: #333;
+        }
+        
+        /* Style the topnav links */
+        .topnav a {
+          float: left;
+          display: block;
+          color: #f2f2f2;
+          text-align: center;
+          padding: 14px 16px;
+          text-decoration: none;
+        }
+        
+        /* Change color on hover */
+        .topnav a:hover {
+          background-color: #ddd;
+          color: black;
+        }
+        /* Create two unequal columns that floats next to each other */
+        /* Left column */
+        .leftcolumn {
+          float: left;
+          width: 100%;
+        }
+        
+        
+        /* Clear floats after the columns */
+        .row::after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+        
+        /* Footer */
+        .footer {
+          padding: 1px;
+          text-align: center;
+          background: hsla(0, 3%, 29%, 0.977);
+          margin-top: 1px;
+        }
+        
+        
+        
+        </style>
+<script>
+    // Check if the user is logged in
+    function checkLogin() {
+        var username = sessionStorage.getItem('userName');
+        if (!username) {
+            window.location.href = '/.html'; // Redirect to login page
+        }
+    }
+</script>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <div class="header">
+        <h1>ABC Labs</h1>
+       
+      </div>
+      
+      <div class="topnav">
+        <a href="index.html">HOME</a>
+        <a href="shop.html">APPOINTMENT</a>
+        <a href="Aboutus.html">COMPANY</a>
+       
+      
+        <a href="login.html" style="float:right">LOGIN</a>
+        <a href="checkout.html" style="float:right">MY BOOKINGS</a>
+      </div>
+  
+
+    <!-- Checkout Section Begin -->
+    <section class="checkout spad">
+        <div class="container">
+            <div class="row">
+            </div>
+           <center>
+            <div class="checkout__form" >
+                <h4>Booking Details</h4>
+                <div class="row">
+                    <div class="col-lg-12 col-md-6">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>patient Name<span>*</span></p>
+                                    <input type="text" id="input1" placeholder="Enter patient Name" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Doctor Name<span>*</span></p>
+                                    <input type="text" id="input2" placeholder="Enter Doctor Name" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Test type<span>*</span></p>
+                                    <input type="text" id="input2" placeholder="Enter Test type" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Book Date<span>*</span></p>
+                            <input type="date" id="input3" required>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Time<span>*</span></p>
+                            <input type="text" placeholder="Enter Appointment Time" class="checkout__input__add" id="input4" required>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Contact Number<span>*</span></p>
+                            <input type="text" id="input5" placeholder="Enter Your Contact Number" required>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-lg-12">
+                        <div class="">
+                            <center>
+                            <button onclick="save()" class="site-btn btn btn-outline-success">Book Appointment</button>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+            </div></center>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+
+
+    <script>
+        window.onload = function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var c_name = urlParams.get('name');
+
+            if (c_name) {
+                // Store the name in session storage
+                sessionStorage.setItem('name', c_name);
+                console.log(c_name);
+
+                // Populate the input field with the c_name value
+                var nameInput = document.getElementById('input2');
+                if (nameInput) {
+                    nameInput.value = c_name;
+                }
+            }
+
+            const storedUserName = sessionStorage.getItem("userName");
+
+            // Check if the stored username exists
+            if (storedUserName) {
+                // Set the stored username as the value of the input field
+                document.getElementById("input1").value = storedUserName;
+            }
+        }
+
+
+        const dateInput = document.getElementById('input3');
+
+        // Function to set the minimum date to today's date
+        function setMinDate() {
+            const today = new Date();
+            const day = today.getDate().toString().padStart(2, '0');
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const year = today.getFullYear();
+            const minDate = `${year}-${month}-${day}`;
+            dateInput.setAttribute('min', minDate);
+        }
+
+        // Call the function to set the minimum date initially
+        setMinDate();
+
+        // Add an event listener to update the minimum date if the input is focused
+        dateInput.addEventListener('focus', setMinDate);
+
+
+
+        function save() {
+            let u_name = $("#input1").val();
+            let c_name = $("#input2").val();
+            let book_date = $("#input3").val();
+            let time = $("#input4").val();
+            let contact = $("#input5").val();
+
+            $.ajax({
+                method: "POST",
+                contentType: "application/json",
+                url: "http://localhost:8080/api/v1/appoinment/saveappoinment",
+                async: true,
+                data: JSON.stringify({
+                    u_name: u_name,
+                    c_name: c_name,
+                    book_date: book_date,
+                    time: time,
+                    contact: contact,
+                }),
+                success: function (data) {
+                    alert("Appointment Added Successfully");
+                    window.location.href = '?refresh=true';
+                },
+                error: function (xhr, exception) {
+                    alert("Error");
+                },
+            });
+        }
+    </script>
+
+
+
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.nice-select.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+
+ 
+    <br> 
+    <br> 
+    <br>
+    <div class="footer">
+        <p><h2>HEALTH WORKERS,SAFE PATIENTS</h2> </p>
+    <p>We can help make a difference by being patient with our patients and listening to them</p></h2>
+    </div>
+</body>
+
+</html>
